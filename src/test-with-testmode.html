@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Assessment with TEST MODE</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #1C1C1C;
+      margin-top: 0;
+    }
+    .success-banner {
+      background: #d4edda;
+      border-left: 4px solid #28a745;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 6px;
+    }
+    .test-button {
+      background: #007AFF;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      margin: 10px 0;
+      width: 100%;
+    }
+    .test-button:hover {
+      background: #0051D5;
+    }
+    .test-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      overflow-x: auto;
+    }
+    .result.success {
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+    }
+    .result.error {
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+    }
+    .result.loading {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      color: #856404;
+    }
+    .next-steps {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    .next-steps h3 {
+      margin-top: 0;
+      color: #007AFF;
+    }
+    .next-steps a {
+      color: #007AFF;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .next-steps a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 Test Assessment with TEST MODE</h1>
+    
+    <div class="success-banner">
+      <strong>✅ TEST MODE is enabled in your Google Apps Script</strong><br>
+      <span style="color: #155724; font-size: 14px;">
+        This page will test if your assessment wizard can successfully communicate with the backend and receive mock analysis data.
+      </span>
+    </div>
+
+    <h3>What This Test Does:</h3>
+    <ul style="color: #666; line-height: 1.8;">
+      <li>✅ Sends a complete assessment payload to your Google Apps Script</li>
+      <li>✅ Tests CORS configuration</li>
+      <li>✅ Verifies TEST MODE returns mock data</li>
+      <li>✅ Validates response structure</li>
+    </ul>
+
+    <button id="testBtn" class="test-button" onclick="runAssessmentTest()">
+      🚀 Run Assessment Test
+    </button>
+
+    <div id="result"></div>
+
+    <div class="next-steps" style="display: none;" id="nextSteps">
+      <h3>🎉 Next Steps</h3>
+      <p><strong>Your assessment wizard is working!</strong> Here's what to do:</p>
+      <ol>
+        <li><a href="/">Test the full wizard flow in your app</a></li>
+        <li>Review the <a href="/CORS-SOLUTION-SUMMARY.md">CORS Solution Summary</a> for production deployment</li>
+        <li>Choose a production solution (Personal Gmail or Cloudflare Worker)</li>
+        <li>Set <code>TEST_MODE = false</code> when ready for real AI analysis</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbwjQZWbjpAhxfmxAYvdA_g_8rIRDqhLhJwWJ74GyZ7PEGEwJbAlmNGd7TceCLvKBfxx/exec";
+
+    async function runAssessmentTest() {
+      const resultDiv = document.getElementById('result');
+      const testBtn = document.getElementById('testBtn');
+      const nextSteps = document.getElementById('nextSteps');
+      
+      testBtn.disabled = true;
+      testBtn.textContent = '⏳ Testing...';
+      nextSteps.style.display = 'none';
+
+      resultDiv.className = 'result loading';
+      resultDiv.textContent = '⏳ Sending assessment to Google Apps Script...\n\nThis may take a few seconds...';
+
+      // Complete assessment payload
+      const assessment = {
+        firstName: "Jane",
+        lastName: "Doe",
+        jobTitle: "CTO",
+        email: "jane.doe@testcompany.com",
+        companyName: "Test Ecommerce Co",
+        companySize: "50m-70m",
+        hasERP: true,
+        erpSystems: ["NetSuite"],
+        selectedApps: {
+          "Ecommerce Platform": [
+            { name: "Shopify", logo: "https://cdn.celigo.com/app-logos/shopify.png" }
+          ],
+          "Warehouse Management": [
+            { name: "ShipStation", logo: "https://cdn.celigo.com/app-logos/shipstation.png" }
+          ],
+          "Marketing Automation": [
+            { name: "Klaviyo", logo: "https://cdn.celigo.com/app-logos/klaviyo.png" }
+          ]
+        },
+        categoryInteractions: {
+          "Shopify": "Primary sales channel - handles all online orders",
+          "ShipStation": "Fulfillment partner for order processing",
+          "Klaviyo": "Email marketing and customer engagement"
+        },
+        integrations: [
+          {
+            source: "Shopify",
+            target: "NetSuite",
+            frequency: "Real-time",
+            volume: "1000-5000/day",
+            description: "Order sync from storefront to ERP"
+          },
+          {
+            source: "ShipStation",
+            target: "NetSuite",
+            frequency: "Hourly",
+            volume: "500-1000/day",
+            description: "Fulfillment status updates"
+          }
+        ],
+        painPoints: [
+          "Manual data entry between systems",
+          "Order sync delays causing inventory issues",
+          "Duplicate order creation"
+        ],
+        goals: [
+          "Automate order processing end-to-end",
+          "Reduce manual errors by 80%",
+          "Scale to 10,000+ orders/day"
+        ],
+        additionalContext: "Looking to scale operations significantly in Q2. Need reliable integration platform.",
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        const startTime = Date.now();
+        
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ assessment }),
+          mode: 'cors'
+        });
+
+        const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+
+        console.log('Response status:', response.status);
+        console.log('Response ok?', response.ok);
+
+        const contentType = response.headers.get('content-type');
+        let result;
+
+        if (contentType && contentType.includes('application/json')) {
+          result = await response.json();
+        } else {
+          const text = await response.text();
+          try {
+            result = JSON.parse(text);
+          } catch {
+            throw new Error('Invalid JSON response from server');
+          }
+        }
+
+        console.log('Result:', result);
+
+        if (result.error) {
+          resultDiv.className = 'result error';
+          resultDiv.textContent = `❌ Error Response\n\n${result.error}\n\nDetails:\n${result.details || 'None'}`;
+          testBtn.disabled = false;
+          testBtn.textContent = '🔄 Try Again';
+          return;
+        }
+
+        // Success!
+        resultDiv.className = 'result success';
+        
+        let output = `✅ SUCCESS!\n\n`;
+        output += `Response Time: ${duration}s\n`;
+        output += `Status: ${response.status}\n`;
+        output += `Test Mode: ${result.testMode ? 'YES ✅' : 'NO'}\n\n`;
+        
+        if (result.testMode) {
+          output += `--- TEST MODE DETECTED ---\n`;
+          output += `This means your wizard is working perfectly!\n`;
+          output += `The backend returned mock data as expected.\n\n`;
+        }
+        
+        output += `--- ANALYSIS SUMMARY ---\n`;
+        if (result.analysis && result.analysis.summary) {
+          output += `${result.analysis.summary}\n\n`;
+        }
+        
+        if (result.analysis && result.analysis.by_function) {
+          output += `--- RECOMMENDATIONS BY FUNCTION ---\n`;
+          result.analysis.by_function.forEach(func => {
+            output += `\n${func.function}:\n`;
+            if (func.recommended_integrations && func.recommended_integrations.length > 0) {
+              output += `  • Recommended: ${func.recommended_integrations.join(', ')}\n`;
+            }
+            if (func.quick_wins && func.quick_wins.length > 0) {
+              output += `  • Quick Wins: ${func.quick_wins.join(', ')}\n`;
+            }
+            if (typeof func.confidence === 'number') {
+              output += `  • Confidence: ${func.confidence}/100\n`;
+            }
+          });
+        }
+        
+        output += `\n--- FULL RESPONSE ---\n`;
+        output += JSON.stringify(result, null, 2);
+        
+        resultDiv.textContent = output;
+        
+        // Show next steps
+        nextSteps.style.display = 'block';
+        
+        testBtn.disabled = false;
+        testBtn.textContent = '✅ Test Passed - Run Again?';
+        
+      } catch (error) {
+        console.error('Test failed:', error);
+        
+        resultDiv.className = 'result error';
+        
+        let errorMsg = `❌ TEST FAILED\n\n`;
+        errorMsg += `Error: ${error.message}\n\n`;
+        
+        if (error.message.includes('Failed to fetch') || error.message === 'Load failed') {
+          errorMsg += `--- CORS ERROR DETECTED ---\n\n`;
+          errorMsg += `This is the same CORS issue we identified earlier.\n\n`;
+          errorMsg += `What this means:\n`;
+          errorMsg += `• The request is being blocked by browser CORS policy\n`;
+          errorMsg += `• Your Google Workspace has security restrictions\n`;
+          errorMsg += `• You need to use one of the production solutions\n\n`;
+          errorMsg += `Solutions:\n`;
+          errorMsg += `1. Deploy from a personal Gmail account (easiest)\n`;
+          errorMsg += `2. Use Cloudflare Workers proxy (recommended for production)\n\n`;
+          errorMsg += `See /CORS-SOLUTION-SUMMARY.md for detailed instructions.`;
+        } else {
+          errorMsg += `Unexpected error. Check console for details.`;
+        }
+        
+        resultDiv.textContent = errorMsg;
+        
+        testBtn.disabled = false;
+        testBtn.textContent = '🔄 Try Again';
+      }
+    }
+
+    // Auto-run test on page load (optional)
+    // runAssessmentTest();
+  </script>
+</body>
+</html>

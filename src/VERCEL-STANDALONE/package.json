@@ -1,0 +1,6 @@
+{
+  "name": "celigo-assessment-proxy",
+  "version": "1.0.0",
+  "description": "CORS proxy for Celigo AI Assessment Coach",
+  "type": "module"
+}

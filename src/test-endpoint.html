@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Celigo API Endpoint Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .test-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #1C1C1C;
+      margin-bottom: 10px;
+    }
+    h2 {
+      color: #1C1C1C;
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+    button {
+      background: #007AFF;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    button:hover {
+      background: #0051D5;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .result {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .success {
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+    }
+    .error {
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+    }
+    .info {
+      background: #d1ecf1;
+      border: 1px solid #bee5eb;
+      color: #0c5460;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    .status-running { background: #FFF3CD; color: #856404; }
+    .status-pass { background: #d4edda; color: #155724; }
+    .status-fail { background: #f8d7da; color: #721c24; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Celigo API Endpoint Diagnostics</h1>
+  <div style="background: #d4edda; border-left: 4px solid #28a745; padding: 16px; margin-bottom: 24px; border-radius: 6px;">
+    <strong>✅ TEST MODE ENABLED</strong><br>
+    <span style="color: #155724; font-size: 14px;">
+      Your Google Apps Script is now in TEST MODE (Code.gs line 20). Your assessment wizard will work with mock data!<br>
+      <a href="/api-proxy.html" style="color: #007AFF; text-decoration: underline;">View solutions for production deployment →</a>
+    </span>
+  </div>
+  <p style="color: #666; margin-bottom: 24px;">
+    Test your Google Apps Script Web App endpoint to identify and resolve CORS issues.
+  </p>
+
+  <!-- URL Input -->
+  <div class="test-card">
+    <h2>1. Enter Your Web App URL</h2>
+    <input 
+      type="text" 
+      id="apiUrl" 
+      placeholder="https://script.google.com/macros/s/.../exec"
+      value="https://script.google.com/macros/s/AKfycbwjQZWbjpAhxfmxAYvdA_g_8rIRDqhLhJwWJ74GyZ7PEGEwJbAlmNGd7TceCLvKBfxx/exec"
+    >
+    <p style="font-size: 13px; color: #666;">
+      The URL should end with <code>/exec</code> (not <code>/dev</code>)
+    </p>
+  </div>
+
+  <!-- Test 1: Simple GET -->
+  <div class="test-card">
+    <h2>
+      Test 1: Health Check (GET)
+      <span id="test1-status" class="status-badge" style="display: none;"></span>
+    </h2>
+    <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
+      Tests if the endpoint is accessible and returns the doGet() response.
+    </p>
+    <button onclick="runTest1()">Run Test 1</button>
+    <div id="test1-result"></div>
+  </div>
+
+  <!-- Test 2: POST with JSON -->
+  <div class="test-card">
+    <h2>
+      Test 2: POST Request (No CORS Mode)
+      <span id="test2-status" class="status-badge" style="display: none;"></span>
+    </h2>
+    <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
+      Tests sending JSON data via POST without explicit CORS mode.
+    </p>
+    <button onclick="runTest2()">Run Test 2</button>
+    <div id="test2-result"></div>
+  </div>
+
+  <!-- Test 3: POST with CORS -->
+  <div class="test-card">
+    <h2>
+      Test 3: POST Request (CORS Mode)
+      <span id="test3-status" class="status-badge" style="display: none;"></span>
+    </h2>
+    <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
+      Tests sending JSON data via POST with explicit CORS mode (matches your app).
+    </p>
+    <button onclick="runTest3()">Run Test 3</button>
+    <div id="test3-result"></div>
+  </div>
+
+  <!-- Test 4: Full Assessment POST -->
+  <div class="test-card">
+    <h2>
+      Test 4: Full Assessment Payload
+      <span id="test4-status" class="status-badge" style="display: none;"></span>
+    </h2>
+    <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
+      Tests the complete assessment payload structure (without OpenAI call - will fail at OpenAI step but confirms CORS works).
+    </p>
+    <button onclick="runTest4()">Run Test 4</button>
+    <div id="test4-result"></div>
+  </div>
+
+  <!-- Run All Tests -->
+  <div class="test-card" style="background: #f8f9fa;">
+    <button onclick="runAllTests()" style="background: #28a745;">▶️ Run All Tests</button>
+    <button onclick="clearResults()" style="background: #6c757d;">Clear Results</button>
+  </div>
+
+  <script>
+    function getApiUrl() {
+      return document.getElementById('apiUrl').value.trim();
+    }
+
+    function showResult(testId, message, type = 'info') {
+      const resultDiv = document.getElementById(`${testId}-result`);
+      const statusBadge = document.getElementById(`${testId}-status`);
+      resultDiv.innerHTML = `<div class="result ${type}">${message}</div>`;
+      
+      if (statusBadge) {
+        statusBadge.style.display = 'inline-block';
+        if (type === 'success') {
+          statusBadge.className = 'status-badge status-pass';
+          statusBadge.textContent = '✓ PASS';
+        } else if (type === 'error') {
+          statusBadge.className = 'status-badge status-fail';
+          statusBadge.textContent = '✗ FAIL';
+        } else {
+          statusBadge.className = 'status-badge status-running';
+          statusBadge.textContent = '⋯ RUNNING';
+        }
+      }
+    }
+
+    async function runTest1() {
+      const url = getApiUrl();
+      if (!url) {
+        showResult('test1', 'Error: Please enter your Web App URL', 'error');
+        return;
+      }
+
+      showResult('test1', 'Testing GET request...', 'info');
+
+      try {
+        const response = await fetch(url, {
+          method: 'GET'
+        });
+
+        const text = await response.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch {
+          data = text;
+        }
+
+        if (response.ok) {
+          showResult('test1', 
+            `✓ Success!\n\nStatus: ${response.status}\n\nResponse:\n${JSON.stringify(data, null, 2)}`,
+            'success'
+          );
+        } else {
+          showResult('test1',
+            `✗ Request completed but returned error status\n\nStatus: ${response.status}\n\nResponse:\n${JSON.stringify(data, null, 2)}`,
+            'error'
+          );
+        }
+      } catch (error) {
+        showResult('test1',
+          `✗ Request failed\n\nError: ${error.message}\n\nThis likely means:\n- The URL is incorrect\n- The script is not deployed\n- Network/firewall issue`,
+          'error'
+        );
+      }
+    }
+
+    async function runTest2() {
+      const url = getApiUrl();
+      if (!url) {
+        showResult('test2', 'Error: Please enter your Web App URL', 'error');
+        return;
+      }
+
+      showResult('test2', 'Testing POST without CORS mode...', 'info');
+
+      const testPayload = {
+        assessment: {
+          firstName: "Test",
+          lastName: "User",
+          email: "test@example.com",
+          companyName: "Test Company",
+          selectedApps: {}
+        }
+      };
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(testPayload)
+        });
+
+        const text = await response.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch {
+          data = text;
+        }
+
+        if (response.ok || response.status === 500) {
+          showResult('test2',
+            `✓ POST request succeeded (CORS OK)\n\nStatus: ${response.status}\n\nResponse preview:\n${JSON.stringify(data, null, 2).substring(0, 500)}...\n\n${response.status === 500 ? 'Note: 500 error is expected (OpenAI not configured), but CORS works!' : ''}`,
+            response.ok ? 'success' : 'info'
+          );
+        } else {
+          showResult('test2',
+            `⚠ Unexpected status\n\nStatus: ${response.status}\n\nResponse:\n${JSON.stringify(data, null, 2)}`,
+            'error'
+          );
+        }
+      } catch (error) {
+        showResult('test2',
+          `✗ POST request failed\n\nError: ${error.message}\n\nThis is likely a CORS issue.\n\nPossible fixes:\n1. Redeploy the script (Deploy → Manage deployments → Edit → Deploy)\n2. Ensure "Who has access" is set to "Anyone"\n3. Check that you're using the /exec URL (not /dev)`,
+          'error'
+        );
+      }
+    }
+
+    async function runTest3() {
+      const url = getApiUrl();
+      if (!url) {
+        showResult('test3', 'Error: Please enter your Web App URL', 'error');
+        return;
+      }
+
+      showResult('test3', 'Testing POST with CORS mode (matches your app)...', 'info');
+
+      const testPayload = {
+        assessment: {
+          firstName: "Test",
+          lastName: "User",
+          email: "test@example.com",
+          companyName: "Test Company",
+          selectedApps: {}
+        }
+      };
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(testPayload),
+          mode: 'cors'  // Explicit CORS mode
+        });
+
+        const text = await response.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch {
+          data = text;
+        }
+
+        if (response.ok || response.status === 500) {
+          showResult('test3',
+            `✓ POST request with CORS mode succeeded\n\nStatus: ${response.status}\n\nResponse preview:\n${JSON.stringify(data, null, 2).substring(0, 500)}...\n\n${response.status === 500 ? 'Note: 500 error is expected (OpenAI not configured), but CORS works!' : ''}`,
+            response.ok ? 'success' : 'info'
+          );
+        } else {
+          showResult('test3',
+            `⚠ Unexpected status\n\nStatus: ${response.status}\n\nResponse:\n${JSON.stringify(data, null, 2)}`,
+            'error'
+          );
+        }
+      } catch (error) {
+        showResult('test3',
+          `✗ POST request with CORS failed\n\nError: ${error.message}\n\nThis matches the error in your app.\n\nPossible fixes:\n1. Try redeploying with a NEW deployment (not editing existing)\n2. Clear browser cache and try again\n3. Try from an incognito window\n4. Check Google Apps Script logs for errors`,
+          'error'
+        );
+      }
+    }
+
+    async function runTest4() {
+      const url = getApiUrl();
+      if (!url) {
+        showResult('test4', 'Error: Please enter your Web App URL', 'error');
+        return;
+      }
+
+      showResult('test4', 'Testing full assessment payload...', 'info');
+
+      const fullPayload = {
+        assessment: {
+          firstName: "Jane",
+          lastName: "Doe",
+          jobTitle: "CTO",
+          email: "jane.doe@testcompany.com",
+          companyName: "Test Ecommerce Co",
+          companySize: "50m-70m",
+          hasERP: true,
+          erpSystems: ["NetSuite"],
+          selectedApps: {
+            "Ecommerce Platform": [
+              { name: "Shopify", logo: "https://cdn.celigo.com/app-logos/shopify.png" }
+            ],
+            "Warehouse Management": [
+              { name: "ShipStation", logo: "https://cdn.celigo.com/app-logos/shipstation.png" }
+            ]
+          },
+          categoryInteractions: {
+            "Shopify": "Primary sales channel",
+            "ShipStation": "Fulfillment partner"
+          },
+          integrations: [
+            {
+              source: "Shopify",
+              target: "NetSuite",
+              frequency: "Real-time",
+              volume: "1000-5000/day"
+            }
+          ],
+          painPoints: ["Manual data entry", "Order sync delays"],
+          goals: ["Automate order processing", "Reduce errors"],
+          additionalContext: "Looking to scale operations",
+          timestamp: new Date().toISOString()
+        }
+      };
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(fullPayload),
+          mode: 'cors'
+        });
+
+        const text = await response.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch {
+          data = text;
+        }
+
+        const preview = JSON.stringify(data, null, 2);
+        const truncated = preview.length > 1000 ? preview.substring(0, 1000) + '\n\n... (truncated)' : preview;
+
+        if (response.ok) {
+          showResult('test4',
+            `✓ Full payload test succeeded!\n\nStatus: ${response.status}\n\nResponse:\n${truncated}\n\nThis means your assessment wizard should work!`,
+            'success'
+          );
+        } else if (response.status === 500) {
+          showResult('test4',
+            `⚠ Server error (but CORS works!)\n\nStatus: 500\n\nResponse:\n${truncated}\n\nThe request reached the server but failed (likely OpenAI API key issue).\nCORS is working correctly!`,
+            'info'
+          );
+        } else {
+          showResult('test4',
+            `⚠ Unexpected status\n\nStatus: ${response.status}\n\nResponse:\n${truncated}`,
+            'error'
+          );
+        }
+      } catch (error) {
+        showResult('test4',
+          `✗ Full payload test failed\n\nError: ${error.message}\n\nIf all other tests passed, this suggests an issue with the payload structure or size.`,
+          'error'
+        );
+      }
+    }
+
+    async function runAllTests() {
+      await runTest1();
+      await new Promise(r => setTimeout(r, 1000));
+      await runTest2();
+      await new Promise(r => setTimeout(r, 1000));
+      await runTest3();
+      await new Promise(r => setTimeout(r, 1000));
+      await runTest4();
+    }
+
+    function clearResults() {
+      ['test1', 'test2', 'test3', 'test4'].forEach(testId => {
+        document.getElementById(`${testId}-result`).innerHTML = '';
+        const statusBadge = document.getElementById(`${testId}-status`);
+        if (statusBadge) {
+          statusBadge.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

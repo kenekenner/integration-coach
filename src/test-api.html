@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Test - Celigo Assessment</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    button {
+      background: #1C1C1C;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #333;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 6px;
+      white-space: pre-wrap;
+      font-family: monospace;
+      font-size: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .success {
+      border-left: 4px solid #10b981;
+    }
+    .error {
+      border-left: 4px solid #ef4444;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Celigo Assessment API Test</h1>
+    <p>Click the button below to send a test assessment to your Google Apps Script endpoint.</p>
+    
+    <button id="testBtn" onclick="sendTestAssessment()">Send Test Assessment</button>
+    
+    <div id="result" style="display: none;"></div>
+  </div>
+
+  <script>
+    async function sendTestAssessment() {
+      const btn = document.getElementById('testBtn');
+      const resultDiv = document.getElementById('result');
+      
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+      resultDiv.style.display = 'block';
+      resultDiv.className = '';
+      resultDiv.textContent = 'Sending request...';
+      
+      const API_URL = "https://script.google.com/a/macros/celigo.com/s/AKfycbzEaUvxL0wY9wnuSo4u3Lai7RPnjgfLMCf5BGyc0dZge-0DgVDXVL-2wK9cLuPKp0xx/exec";
+      
+      // Sample test assessment data
+      const assessment = {
+        firstName: "John",
+        lastName: "TestUser",
+        jobTitle: "CIO",
+        email: "test@example.com",
+        companyName: "Test Ecommerce Co.",
+        companySize: "30m-50m",
+        hasERP: true,
+        erpSystems: ["NetSuite"],
+        selectedApps: {
+          "Ecommerce Platforms": [
+            { name: "Shopify", context: "Main storefront with 10k SKUs" }
+          ],
+          "Payments & Point of Sale": [
+            { name: "Stripe", context: "Primary payment processor" }
+          ],
+          "Shipping & Logistics": [
+            { name: "ShipStation", context: "Fulfillment management" }
+          ],
+          "Marketing & Email": [
+            { name: "Klaviyo", context: "Email marketing automation" }
+          ]
+        },
+        categoryInteractions: {},
+        integrations: [
+          {
+            from: "Shopify",
+            to: "NetSuite",
+            type: "prebuilt",
+            description: "Order and inventory sync"
+          },
+          {
+            from: "ShipStation",
+            to: "Shopify",
+            type: "native",
+            description: "Shipping updates"
+          }
+        ],
+        painPoints: [
+          "Manual data entry between systems",
+          "Inventory sync delays",
+          "Customer data fragmentation"
+        ],
+        goals: [
+          "Real-time inventory accuracy",
+          "Automated order processing",
+          "Unified customer view"
+        ],
+        additionalContext: "Looking to scale operations for 2x growth",
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        console.log('Sending to:', API_URL);
+        console.log('Payload:', assessment);
+        
+        // Verify it's a plain object
+        console.log("Assessment type:", typeof assessment);
+        console.log("Is object?", assessment && typeof assessment === "object");
+        
+        if (!assessment || typeof assessment !== "object") {
+          throw new Error("Assessment is not a valid object");
+        }
+
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ assessment }),
+          mode: 'cors'
+        });
+
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        
+        const contentType = response.headers.get('content-type');
+        let result;
+        
+        if (contentType && contentType.includes('application/json')) {
+          result = await response.json();
+        } else {
+          const text = await response.text();
+          console.log('Raw response:', text);
+          try {
+            result = JSON.parse(text);
+          } catch {
+            result = { error: 'Non-JSON response', response: text };
+          }
+        }
+        
+        console.log('Response data:', result);
+
+        if (result.error) {
+          resultDiv.className = 'error';
+          resultDiv.textContent = `❌ ERROR:\n${result.error}\n\nFull response:\n${JSON.stringify(result, null, 2)}`;
+        } else {
+          resultDiv.className = 'success';
+          resultDiv.textContent = `✅ SUCCESS!\n\nResponse:\n${JSON.stringify(result, null, 2)}`;
+          
+          if (result.pdfUrl) {
+            resultDiv.textContent += `\n\n🔗 PDF URL: ${result.pdfUrl}`;
+          }
+        }
+      } catch (err) {
+        console.error('Fetch error:', err);
+        resultDiv.className = 'error';
+        
+        let errorMsg = `❌ FETCH FAILED:\n${err.message}\n\n`;
+        
+        if (err.message.includes('Failed to fetch')) {
+          errorMsg += `This is likely a CORS (Cross-Origin Resource Sharing) issue.\n\n`;
+          errorMsg += `To fix this, ensure your Google Apps Script:\n`;
+          errorMsg += `1. Is deployed as a Web App\n`;
+          errorMsg += `2. Has "Execute as: Me" selected\n`;
+          errorMsg += `3. Has "Who has access: Anyone" selected\n`;
+          errorMsg += `4. Returns proper CORS headers in doPost():\n\n`;
+          errorMsg += `function doPost(e) {\n`;
+          errorMsg += `  return ContentService\n`;
+          errorMsg += `    .createTextOutput(JSON.stringify({success: true}))\n`;
+          errorMsg += `    .setMimeType(ContentService.MimeType.JSON);\n`;
+          errorMsg += `}\n`;
+        }
+        
+        resultDiv.textContent = errorMsg;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send Test Assessment';
+      }
+    }
+  </script>
+</body>
+</html>

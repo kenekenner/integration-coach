@@ -1,0 +1,327 @@
+@import url('https://use.typekit.net/biz5xyw.css');
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  --background: #FBFBFB;
+  --foreground: #1C1C1C;
+  --card: #FFFFFF;
+  --card-foreground: #1C1C1C;
+  --popover: #FFFFFF;
+  --popover-foreground: #1C1C1C;
+  --primary: #1C1C1C;
+  --primary-foreground: #FFFFFF;
+  --secondary: rgba(28, 28, 28, 0.05);
+  --secondary-foreground: #1C1C1C;
+  --muted: #F2F2F2;
+  --muted-foreground: rgba(28, 28, 28, 0.5);
+  --accent: rgba(28, 28, 28, 0.05);
+  --accent-foreground: #1C1C1C;
+  --destructive: #8A1111;
+  --destructive-foreground: #FFFFFF;
+  --border: rgba(0, 0, 0, 0.05);
+  --input: transparent;
+  --input-background: #FFFFFF;
+  --switch-background: rgba(28, 28, 28, 0.05);
+  --font-weight-extrabold: 800;
+  --font-weight-bold: 700;
+  --font-weight-semibold: 600;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: rgba(28, 28, 28, 0.2);
+  --chart-1: #1C1C1C;
+  --chart-2: #A8C5DA;
+  --chart-3: #B8DCBE;
+  --chart-4: rgba(28, 28, 28, 0.5);
+  --chart-5: rgba(28, 28, 28, 0.2);
+  --radius: 1.5rem;
+  --sidebar: #FBFBFB;
+  --sidebar-foreground: #1C1C1C;
+  --sidebar-primary: #1C1C1C;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: rgba(28, 28, 28, 0.05);
+  --sidebar-accent-foreground: #1C1C1C;
+  --sidebar-border: rgba(0, 0, 0, 0.05);
+  --sidebar-ring: rgba(28, 28, 28, 0.2);
+}
+
+.dark {
+  --background: #1C1C1C;
+  --foreground: #FFFFFF;
+  --card: #1C1C1C;
+  --card-foreground: #FFFFFF;
+  --popover: #1C1C1C;
+  --popover-foreground: #FFFFFF;
+  --primary: #FFFFFF;
+  --primary-foreground: #1C1C1C;
+  --secondary: rgba(255, 255, 255, 0.05);
+  --secondary-foreground: #FFFFFF;
+  --muted: rgba(255, 255, 255, 0.1);
+  --muted-foreground: rgba(255, 255, 255, 0.5);
+  --accent: rgba(255, 255, 255, 0.05);
+  --accent-foreground: #FFFFFF;
+  --destructive: #8A1111;
+  --destructive-foreground: #FFFFFF;
+  --border: rgba(255, 255, 255, 0.05);
+  --input: rgba(255, 255, 255, 0.05);
+  --ring: rgba(255, 255, 255, 0.2);
+  --font-weight-extrabold: 800;
+  --font-weight-bold: 700;
+  --font-weight-semibold: 600;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: #FFFFFF;
+  --chart-2: #A8C5DA;
+  --chart-3: #B8DCBE;
+  --chart-4: rgba(255, 255, 255, 0.5);
+  --chart-5: rgba(255, 255, 255, 0.2);
+  --sidebar: #1C1C1C;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #FFFFFF;
+  --sidebar-primary-foreground: #1C1C1C;
+  --sidebar-accent: rgba(255, 255, 255, 0.05);
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: rgba(255, 255, 255, 0.05);
+  --sidebar-ring: rgba(255, 255, 255, 0.2);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Area Normal', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+}
+
+/**
+ * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ */
+@layer base {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
+    h1 {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-weight-extrabold);
+      line-height: 1.2;
+    }
+
+    h2 {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-extrabold);
+      line-height: 1.2;
+    }
+
+    h3 {
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-extrabold);
+      line-height: 1.2;
+    }
+
+    h4 {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-bold);
+      line-height: 1.2;
+    }
+
+    p {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    label {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-semibold);
+      line-height: 1.5;
+    }
+
+    button {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-extrabold);
+      line-height: normal;
+    }
+
+    input, textarea {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-semibold);
+      line-height: 1.5;
+    }
+  }
+}
+
+html {
+  font-size: var(--font-size);
+}
+
+/* Custom shadow matching UI kit */
+.shadow-celigo {
+  box-shadow: 6px 6px 50px 0px rgba(0, 0, 0, 0.05);
+}
+
+/* Background animation keyframes */
+@keyframes morphEnhanced {
+  0% { 
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    opacity: 0.12;
+  }
+  25% { 
+    transform: translate(100px, -80px) scale(1.3) rotate(90deg);
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+    opacity: 0.12;
+  }
+  50% { 
+    transform: translate(-50px, 120px) scale(0.8) rotate(180deg);
+    border-radius: 70% 30% 50% 50% / 30% 70% 50% 60%;
+    opacity: 0.12;
+  }
+  75% { 
+    transform: translate(-120px, -60px) scale(1.1) rotate(270deg);
+    border-radius: 40% 70% 60% 30% / 70% 40% 60% 50%;
+    opacity: 0.12;
+  }
+  100% { 
+    transform: translate(0, 0) scale(1) rotate(360deg);
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    opacity: 0.12;
+  }
+}
+
+@keyframes fadeInGlow {
+  from { opacity: 0; }
+  to { opacity: 0.3; }
+}
+
+@keyframes fadeInGlowDim {
+  from { opacity: 0; }
+  to { opacity: 0.15; }
+}
+
+@keyframes fadeInDot {
+  from { opacity: 0; }
+  to { opacity: 0.6; }
+}
+
+@keyframes fadeInDotDim {
+  from { opacity: 0; }
+  to { opacity: 0.3; }
+}
+
+@keyframes fadeInLine {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-morphEnhanced {
+  animation: morphEnhanced ease-in-out infinite;
+}
+
+/* Print styles for PDF export */
+@media print {
+  @page {
+    margin: 0.75in 0.5in;
+    size: letter;
+  }
+
+  body {
+    background: white !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Hide buttons and interactive elements */
+  button,
+  [class*="no-print"] {
+    display: none !important;
+  }
+
+  /* Prevent breaks inside important elements */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* Keep cards and sections together */
+  [class*="Card"],
+  [class*="card"],
+  section,
+  article {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Prevent orphans and widows */
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Keep recommendation items together */
+  .space-y-6 > div,
+  .space-y-4 > div,
+  .space-y-3 > div {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Add spacing between major sections */
+  .space-y-6 > div:not(:first-child) {
+    margin-top: 1.5rem;
+  }
+
+  /* Make sure colors are preserved */
+  * {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+
+  /* Ensure proper rendering of badges and tags */
+  [class*="badge"],
+  [class*="Badge"] {
+    border: 1px solid currentColor;
+  }
+}

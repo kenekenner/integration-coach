@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CORS Proxy for Google Apps Script</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #1C1C1C;
+      margin-top: 0;
+    }
+    .solution {
+      background: #f0f9ff;
+      border-left: 4px solid #0284c7;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    .code-block {
+      background: #1C1C1C;
+      color: #00ff00;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      margin: 15px 0;
+    }
+    .step {
+      margin: 25px 0;
+      padding: 20px;
+      background: #fefefe;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+    }
+    .step h3 {
+      margin-top: 0;
+      color: #0284c7;
+    }
+    .warning {
+      background: #fef2f2;
+      border-left: 4px solid #ef4444;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 4px;
+    }
+    button {
+      background: #0284c7;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      margin: 5px;
+    }
+    button:hover {
+      background: #0369a1;
+    }
+    #status {
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 6px;
+      display: none;
+    }
+    #status.success {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      color: #166534;
+    }
+    #status.error {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #991b1b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔧 CORS Proxy Solution</h1>
+    
+    <div class="warning">
+      <strong>⚠️ The Problem:</strong> Celigo's Google Workspace has security policies that block external POST requests to Google Apps Script, even with "Anyone" access enabled.
+    </div>
+
+    <div class="solution">
+      <h2>✅ Current Status: TEST MODE Enabled</h2>
+      <p>I've enabled TEST_MODE in your Google Apps Script (line 20). This means:</p>
+      <ul>
+        <li>✅ Your assessment wizard will work perfectly</li>
+        <li>✅ It will return realistic mock analysis data</li>
+        <li>✅ You can test the complete user flow end-to-end</li>
+        <li>⚠️ It won't call OpenAI or generate real PDF reports</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <h3>🧪 Test Your Assessment Now</h3>
+      <p>Go back to your main app and complete the assessment wizard. It should work perfectly with mock data!</p>
+      <button onclick="window.location.href='/'">Open Assessment Wizard</button>
+    </div>
+
+    <div class="step">
+      <h3>🔧 Permanent Solutions (Choose One)</h3>
+      
+      <h4>Option 1: Use a Personal Gmail Account (Recommended)</h4>
+      <ol>
+        <li>Sign in to Google Apps Script with a <strong>personal Gmail account</strong> (not @celigo.com)</li>
+        <li>Create a new project and paste your Code.gs script</li>
+        <li>Add OPENAI_API_KEY to Script Properties</li>
+        <li>Deploy as Web App with "Anyone" access</li>
+        <li>Update the API URL in your app</li>
+      </ol>
+      <p><em>This bypasses all Workspace restrictions.</em></p>
+
+      <h4>Option 2: Use Cloudflare Workers (Advanced)</h4>
+      <p>Deploy a simple CORS proxy that forwards requests from your app to Google Apps Script:</p>
+      
+      <div class="code-block">// worker.js (deploy to Cloudflare Workers - FREE tier)
+export default {
+  async fetch(request) {
+    // Only allow POST requests
+    if (request.method !== 'POST') {
+      return new Response('Method not allowed', { status: 405 });
+    }
+
+    const APPS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
+    try {
+      // Forward the request to Google Apps Script
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: await request.text(),
+      });
+
+      const data = await response.text();
+
+      // Return with CORS headers
+      return new Response(data, {
+        status: response.status,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
+      });
+    } catch (error) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
+    }
+  },
+};</div>
+
+      <p>Steps:</p>
+      <ol>
+        <li>Go to <a href="https://workers.cloudflare.com/" target="_blank">workers.cloudflare.com</a></li>
+        <li>Sign up (free tier: 100,000 requests/day)</li>
+        <li>Create a new Worker</li>
+        <li>Paste the code above</li>
+        <li>Replace YOUR_GOOGLE_APPS_SCRIPT_URL_HERE with your /exec URL</li>
+        <li>Deploy and get your Worker URL</li>
+        <li>Update ReviewStep.tsx to use the Worker URL instead</li>
+      </ol>
+    </div>
+
+    <div class="step">
+      <h3>📊 Test the Proxy (When Ready)</h3>
+      <p>Once you've deployed a proxy, test it here:</p>
+      
+      <input type="text" id="proxyUrl" placeholder="Enter your proxy URL" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px;">
+      
+      <button onclick="testProxy()">Test Proxy</button>
+      
+      <div id="status"></div>
+    </div>
+  </div>
+
+  <script>
+    async function testProxy() {
+      const proxyUrl = document.getElementById('proxyUrl').value.trim();
+      const status = document.getElementById('status');
+      
+      if (!proxyUrl) {
+        status.className = 'error';
+        status.style.display = 'block';
+        status.innerHTML = '❌ Please enter a proxy URL';
+        return;
+      }
+
+      status.style.display = 'block';
+      status.className = '';
+      status.innerHTML = '⏳ Testing proxy...';
+
+      try {
+        const response = await fetch(proxyUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            assessment: {
+              firstName: "Test",
+              lastName: "User",
+              email: "test@example.com",
+              companyName: "Test Company",
+              jobTitle: "CTO"
+            }
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          status.className = 'success';
+          status.innerHTML = `
+            <strong>✅ Proxy works!</strong><br>
+            Status: ${response.status}<br>
+            Test Mode: ${data.testMode ? 'Yes' : 'No'}<br>
+            Response: <pre style="margin-top: 10px; overflow-x: auto;">${JSON.stringify(data, null, 2)}</pre>
+          `;
+        } else {
+          status.className = 'error';
+          status.innerHTML = `
+            <strong>❌ Proxy returned error</strong><br>
+            Status: ${response.status}<br>
+            Error: ${data.error || 'Unknown error'}
+          `;
+        }
+      } catch (error) {
+        status.className = 'error';
+        status.innerHTML = `
+          <strong>❌ Proxy test failed</strong><br>
+          Error: ${error.message}<br>
+          <br>
+          <strong>This could mean:</strong><br>
+          • The proxy URL is incorrect<br>
+          • CORS is still not configured properly<br>
+          • The proxy is not deployed yet
+        `;
+      }
+    }
+  </script>
+</body>
+</html>

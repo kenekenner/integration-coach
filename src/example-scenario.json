@@ -1,0 +1,158 @@
+{
+  "firstName": "Elena",
+  "lastName": "Park",
+  "jobTitle": "IT Director",
+  "email": "Test@Persona11.com",
+  "companyName": "LuxeGlow Beauty",
+  "companySize": "70m-80m",
+  "hasERP": true,
+  "erpSystems": [
+    "Oracle NetSuite"
+  ],
+  "selectedApps": {
+    "ERP / Financial Management": [
+      {
+        "name": "Oracle NetSuite",
+        "context": "Central system of record for inventory, pricing, and vendor management. Tracks SKUs, purchase orders, and wholesale pricing."
+      }
+    ],
+    "Storefronts & Marketplaces": [
+      {
+        "name": "Shopify Plus",
+        "context": "Primary D2C storefront for ecommerce operations."
+      },
+      {
+        "name": "Amazon Seller Central",
+        "context": "Used for mass-market SKUs and third-party listings."
+      },
+      {
+        "name": "Sephora Vendor Portal",
+        "isCustom": true,
+        "context": "B2B distribution channel for luxury product lines."
+      }
+    ],
+    "Product & Portfolio Management": [
+      {
+        "name": "Salsify",
+        "context": "Product Information Management (PIM) system managing product attributes, images, and descriptions."
+      },
+      {
+        "name": "Bynder",
+        "context": "Digital Asset Management (DAM) platform storing product and marketing imagery."
+      }
+    ],
+    "Order Management & Fulfillment": [
+      {
+        "name": "ShipStation",
+        "context": "Manages D2C shipping, fulfillment, and returns."
+      },
+      {
+        "name": "Fishbowl Inventory",
+        "isCustom": true,
+        "context": "Used by the 3PL provider for warehouse logistics."
+      }
+    ],
+    "Sales & Marketing": [
+      {
+        "name": "Klaviyo",
+        "context": "Email and SMS automation for retention and promotional campaigns."
+      },
+      {
+        "name": "Google Ads",
+        "context": "Paid media advertising for brand awareness and ecommerce growth."
+      },
+      {
+        "name": "Meta Ads",
+        "context": "Paid social campaigns linked to Shopify product feeds."
+      },
+      {
+        "name": "HubSpot CRM",
+        "context": "Used for B2B and wholesale customer engagement and outreach."
+      }
+    ],
+    "Data Warehouse / Analytics / BI": [
+      {
+        "name": "BigQuery",
+        "context": "Data warehouse for unified ecommerce, product, and inventory reporting."
+      },
+      {
+        "name": "Looker Studio",
+        "context": "Dashboarding and visualization for marketing and executive reporting."
+      }
+    ],
+    "Collaboration & Project Management": [],
+    "Finance / Accounting": [],
+    "Manufacturing / Production": [],
+    "Demand Planning / Forecasting": [],
+    "Authentication & Development": [],
+    "HR / Employee Management": [],
+    "Returns & Reverse Logistics": [],
+    "Customer Experience & Support": [],
+    "Payments & Point of Sale (POS)": []
+  },
+  "categoryInteractions": {
+    "ERP / Financial Management": true,
+    "Storefronts & Marketplaces": true,
+    "Product & Portfolio Management": true,
+    "Order Management & Fulfillment": true,
+    "Sales & Marketing": true,
+    "Data Warehouse / Analytics / BI": true,
+    "Collaboration & Project Management": true,
+    "Finance / Accounting": true,
+    "Manufacturing / Production": true,
+    "Demand Planning / Forecasting": true,
+    "Authentication & Development": true,
+    "HR / Employee Management": true,
+    "Returns & Reverse Logistics": true,
+    "Customer Experience & Support": true,
+    "Payments & Point of Sale (POS)": true
+  },
+  "integrations": [
+    {
+      "from": "Shopify Plus",
+      "to": "NetSuite",
+      "type": "prebuilt"
+    },
+    {
+      "from": "Salsify",
+      "to": "Shopify Plus",
+      "type": "custom"
+    },
+    {
+      "from": "Bynder",
+      "to": "Salsify",
+      "type": "native"
+    },
+    {
+      "from": "NetSuite",
+      "to": "Fishbowl Inventory",
+      "type": "custom"
+    },
+    {
+      "from": "Amazon Seller Central",
+      "to": "NetSuite",
+      "type": "manual"
+    },
+    {
+      "from": "Shopify Plus",
+      "to": "BigQuery",
+      "type": "custom"
+    }
+  ],
+  "painPoints": [
+    "Product data inconsistency across channels",
+    "Manual onboarding for new products",
+    "Frequent listing errors on marketplaces",
+    "Disconnected PIM and DAM workflows",
+    "Time-intensive manual updates"
+  ],
+  "goals": [
+    "Automate product data enrichment and synchronization",
+    "Establish a single source of truth for product information",
+    "Reduce manual errors in channel listings",
+    "Enable real-time SKU-level visibility",
+    "Improve data quality and governance"
+  ],
+  "additionalContext": "Pain Points\n1. Product data inconsistency — SKU names, attributes, and descriptions differ across Shopify, Amazon, and Sephora.\n2. Manual onboarding for new SKUs — Each product must be formatted and uploaded per channel.\n3. Frequent listing errors — Missing images or mismatched variants lead to listing rejections.\n4. Disconnected PIM workflows — Salsify updates don't propagate to all systems.\n5. Time-consuming updates — Marketing and operations teams manually reconcile product data across systems.\n\nIntegration Goals\n• Enable bidirectional sync between Salsify, Shopify, Amazon, and NetSuite.\n• Centralize product data and digital assets under Salsify and Bynder as the golden record.\n• Replace manual CSV uploads with automated, event-driven updates.\n• Provide real-time SKU-level visibility and analytics in BigQuery.\n• Improve product data governance and consistency across all sales channels.",
+  "timestamp": "2025-10-30T18:42:00.000Z"
+}

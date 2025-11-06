@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Vercel Endpoint</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1C1C1C;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        #results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .success {
+            color: #28a745;
+        }
+        .error {
+            color: #dc3545;
+        }
+        .info {
+            color: #17a2b8;
+        }
+        .url {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 15px 0;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Vercel Endpoint Test</h1>
+        
+        <div class="url">
+            <strong>Testing:</strong><br>
+            https://celigo-proxy.vercel.app/api/submit
+        </div>
+
+        <button onclick="testHealthCheck()">1️⃣ Test Health Check (GET)</button>
+        <button onclick="testPostRequest()">2️⃣ Test POST Request</button>
+        <button onclick="clearResults()">Clear Results</button>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://celigo-proxy.vercel.app/api/submit';
+        const resultsEl = document.getElementById('results');
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            resultsEl.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+            resultsEl.scrollTop = resultsEl.scrollHeight;
+        }
+
+        function clearResults() {
+            resultsEl.innerHTML = '';
+        }
+
+        async function testHealthCheck() {
+            clearResults();
+            log('Testing GET request (health check)...', 'info');
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'GET'
+                });
+
+                log(`✅ Response Status: ${response.status}`, 'success');
+                log(`✅ Response OK: ${response.ok}`, 'success');
+                
+                const data = await response.json();
+                log('✅ Response Data:', 'success');
+                log(JSON.stringify(data, null, 2), 'info');
+
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+                log(error.stack, 'error');
+            }
+        }
+
+        async function testPostRequest() {
+            clearResults();
+            log('Testing POST request with sample data...', 'info');
+            
+            const testData = {
+                assessment: {
+                    firstName: 'Test',
+                    lastName: 'User',
+                    jobTitle: 'CIO',
+                    email: 'test@example.com',
+                    companyName: 'Test Company',
+                    companySize: '50m-70m',
+                    hasERP: true,
+                    erpSystems: ['Oracle NetSuite'],
+                    selectedApps: {
+                        'ERP / Financial Management': [
+                            { name: 'Oracle NetSuite', context: 'Test context' }
+                        ],
+                        'Storefronts & Marketplaces': [
+                            { name: 'Shopify' }
+                        ]
+                    },
+                    categoryInteractions: {
+                        'ERP / Financial Management': true
+                    },
+                    integrations: [
+                        {
+                            from: 'Shopify',
+                            to: 'Oracle NetSuite',
+                            type: 'prebuilt'
+                        }
+                    ],
+                    painPoints: ['Lack of real-time data sync'],
+                    goals: ['Reduce IT maintenance burden'],
+                    additionalContext: '',
+                    timestamp: new Date().toISOString()
+                }
+            };
+
+            log('Payload:', 'info');
+            log(JSON.stringify(testData, null, 2), 'info');
+            log('\n---\n', 'info');
+
+            try {
+                log('Sending POST request...', 'info');
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testData)
+                });
+
+                log(`✅ Response Status: ${response.status}`, 'success');
+                log(`✅ Response OK: ${response.ok}`, 'success');
+                
+                // Log CORS headers
+                log('\nCORS Headers:', 'info');
+                const corsHeaders = [
+                    'access-control-allow-origin',
+                    'access-control-allow-methods',
+                    'access-control-allow-headers'
+                ];
+                corsHeaders.forEach(header => {
+                    const value = response.headers.get(header);
+                    log(`  ${header}: ${value || 'NOT SET'}`, value ? 'success' : 'error');
+                });
+
+                log('\n---\n', 'info');
+                
+                const contentType = response.headers.get('content-type');
+                log(`Content-Type: ${contentType}`, 'info');
+
+                let data;
+                if (contentType && contentType.includes('application/json')) {
+                    data = await response.json();
+                } else {
+                    const text = await response.text();
+                    log('⚠️ Non-JSON response:', 'error');
+                    log(text, 'error');
+                    return;
+                }
+
+                log('✅ Response Data:', 'success');
+                log(JSON.stringify(data, null, 2), 'info');
+
+                if (data.testMode) {
+                    log('\n✅ TEST MODE is active - this is expected!', 'success');
+                }
+
+                if (data.error) {
+                    log(`\n❌ Error in response: ${data.error}`, 'error');
+                } else {
+                    log('\n🎉 SUCCESS! The endpoint is working correctly!', 'success');
+                }
+
+            } catch (error) {
+                log(`\n❌ Fetch Error: ${error.message}`, 'error');
+                log(error.stack, 'error');
+                
+                if (error.message.includes('Failed to fetch')) {
+                    log('\n⚠️ This usually means:', 'error');
+                    log('  - CORS headers are not set correctly', 'error');
+                    log('  - The endpoint is not accessible', 'error');
+                    log('  - Network/firewall issue', 'error');
+                }
+            }
+        }
+
+        // Auto-run health check on load
+        window.addEventListener('load', () => {
+            log('Page loaded. Click buttons above to test the endpoint.', 'info');
+        });
+    </script>
+</body>
+</html>
