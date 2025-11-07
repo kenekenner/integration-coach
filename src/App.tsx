@@ -122,7 +122,7 @@ export default function App() {
 
   return (
     <>
-      <div className="min-h-screen relative bg-[#FBFBFB]">
+      <div className="relative bg-[#FBFBFB] pb-12">
         {/* Fixed Background Constellation */}
         <IntegrationConstellation
           selectedApps={assessmentData.selectedApps}
