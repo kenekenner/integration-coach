@@ -91,7 +91,7 @@ export function WelcomeStep({ onNext, onDevModeUpload, onScenarioUpload }: Welco
               <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
               <div>
                 <p className="text-[#1C1C1C]">
-                  Personalized recommendations using our vast proprietary data from thousands of successful implementations
+                     Personalized recommendations powered by AI and best practices from thousands of successful implementations
                 </p>
               </div>
             </div>
