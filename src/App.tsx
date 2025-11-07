@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { WelcomeStep } from './components/WelcomeStep';
 import { BasicInfoStep } from './components/BasicInfoStep';
 import { ERPStep } from './components/ERPStep';
@@ -72,6 +72,31 @@ export default function App() {
   
   // Dev mode: store uploaded recommendations
   const [devRecommendations, setDevRecommendations] = useState<any>(null);
+// Auto-resize iframe for Framer embed
+  useEffect(() => {
+    const sendHeight = () => {
+      const height = document.documentElement.scrollHeight;
+      window.parent.postMessage({ height }, '*');
+    };
+
+    // Send height on mount and whenever content changes
+    sendHeight();
+
+    // Use ResizeObserver to detect any size changes
+    const resizeObserver = new ResizeObserver(() => {
+      sendHeight();
+    });
+
+    resizeObserver.observe(document.body);
+
+    // Also send height after a short delay to catch any async content
+    const timer = setTimeout(sendHeight, 100);
+
+    return () => {
+      resizeObserver.disconnect();
+      clearTimeout(timer);
+    };
+  }, [currentStep, assessmentData]); // Re-run when step or data changes
 
   const steps = [
     { component: WelcomeStep, title: 'Welcome' },
