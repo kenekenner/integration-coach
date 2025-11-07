@@ -291,7 +291,7 @@ export function ManualGPTDialog({ open, onOpenChange, assessmentData, onRecommen
               }`}
             >
               <FileJson className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-              <p className="text-slate-900 mb-2">Drop your recommendations.json file here</p>
+              <p className="text-slate-900 mb-2">Drop your Integration-Recommendations.json file here</p>
               <p className="text-sm text-slate-600 mb-4">or</p>
               <Button
                 onClick={() => {
